@@ -20,8 +20,21 @@ const createCheckInSummary = (checkInAppointments: Appointment[]) => {
     const countsByHour: Record<string, number> = {};
     checkInAppointments.forEach(appt => {
         if (appt.Check_in_Time) {
-            const hour = appt.Check_in_Time.substring(0, 2) + ':00';
-            countsByHour[hour] = (countsByHour[hour] || 0) + 1;
+            try {
+                // Handle various time formats (HH:MM:SS, HH:MM, or full timestamp)
+                let timeStr = appt.Check_in_Time;
+
+                // If it's a full timestamp, extract just the time portion
+                if (timeStr.includes('T')) {
+                    timeStr = timeStr.split('T')[1];
+                }
+
+                // Extract hour (first 2 characters of time string)
+                const hour = timeStr.substring(0, 2) + ':00';
+                countsByHour[hour] = (countsByHour[hour] || 0) + 1;
+            } catch (e) {
+                console.error('Error parsing Check_in_Time:', appt.Check_in_Time, e);
+            }
         }
     });
     const peakHour = Object.keys(countsByHour).length > 0

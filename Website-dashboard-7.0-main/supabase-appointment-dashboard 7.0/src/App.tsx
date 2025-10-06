@@ -180,14 +180,28 @@ const App: React.FC = () => {
 
     checkInAppointments.forEach(appt => {
         if (appt.Check_in_Time) {
-            const hour = appt.Check_in_Time.substring(0, 2);
-            const hourString = hour + ':00';
-            if (countsByHour.hasOwnProperty(hourString)) {
-                countsByHour[hourString]++;
+            try {
+                // Handle various time formats (HH:MM:SS, HH:MM, or full timestamp)
+                let timeStr = appt.Check_in_Time;
+
+                // If it's a full timestamp, extract just the time portion
+                if (timeStr.includes('T')) {
+                    timeStr = timeStr.split('T')[1];
+                }
+
+                // Extract hour (first 2 characters of time string)
+                const hour = timeStr.substring(0, 2);
+                const hourString = hour + ':00';
+
+                if (countsByHour.hasOwnProperty(hourString)) {
+                    countsByHour[hourString]++;
+                }
+            } catch (e) {
+                console.error('Error parsing Check_in_Time:', appt.Check_in_Time, e);
             }
         }
     });
-    
+
     return Object.entries(countsByHour).map(([hour, count]) => ({ hour, count }));
   }, [checkInAppointments]);
 
@@ -200,14 +214,28 @@ const App: React.FC = () => {
 
     allCheckInAppointments.forEach(appt => {
         if (appt.Check_in_Time) {
-            const hour = appt.Check_in_Time.substring(0, 2);
-            const hourString = hour + ':00';
-            if (countsByHour.hasOwnProperty(hourString)) {
-                countsByHour[hourString]++;
+            try {
+                // Handle various time formats (HH:MM:SS, HH:MM, or full timestamp)
+                let timeStr = appt.Check_in_Time;
+
+                // If it's a full timestamp, extract just the time portion
+                if (timeStr.includes('T')) {
+                    timeStr = timeStr.split('T')[1];
+                }
+
+                // Extract hour (first 2 characters of time string)
+                const hour = timeStr.substring(0, 2);
+                const hourString = hour + ':00';
+
+                if (countsByHour.hasOwnProperty(hourString)) {
+                    countsByHour[hourString]++;
+                }
+            } catch (e) {
+                console.error('Error parsing Check_in_Time:', appt.Check_in_Time, e);
             }
         }
     });
-    
+
     return Object.entries(countsByHour).map(([hour, count]) => ({ hour, count }));
   }, [allCheckInAppointments]);
 
